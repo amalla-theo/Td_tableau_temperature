@@ -1,84 +1,97 @@
 import java.text.DecimalFormat;
 
-public class Main {
-    public static void main(String[] args) {
-        DecimalFormat df = new DecimalFormat("00.0");
-        double[] dTemperatures = new double[14];
-        double dMinimumMatin = 50.0;
-        double dMaximumMatin = -50.0;
-        double dMinimumAprem = 50.0;
-        double dMaximumAprem = -50.0;
-        double dMaximum = 0.0;
-        double dMinimum = 0.0;
-        double dMoyenneMatin = 0.0;
-        double dMoyenneAprem = 0.0;
-        double dMoyenne = 0.0;
+class Ihm {
 
+    public static Temperature [] temperatures = new Temperature[7];
+    public static void main(String[] args){
 
-        for (int i = 0; i < dTemperatures.length; i = i+2) {
-            dTemperatures[i] = Math.random() * 20.00 - 10;
-            dMoyenneMatin += dTemperatures[i];
-            if (dTemperatures[i] < dMinimumMatin) {
-                dMinimumMatin = dTemperatures[i];
+        double matinMax = -50;
+        double apremMax = -50;
+        double max = 0;
+        double matinMin = 50;
+        double apremMin = 50;
+        double min = 0;
+        double matinMoy = 0;
+        double apremMoy = 0;
+        double moy = 0;
+
+        DecimalFormat df = new DecimalFormat("+#,#00.0;-#");
+
+        String[]jour = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"};
+        for(int i=0; i<temperatures.length; i++){
+            temperatures[i] = new Temperature();
+            temperatures[i].matin = (Math.random() * -25) + 5;
+            temperatures[i].aprem = Math.random() * 20.00 + 10;
+            temperatures[i].jour = jour[i];
+
+            // Calcul de la température minimale et maximal du matin et de l'après-midi
+            if (temperatures[i].matin > matinMax){
+                matinMax = temperatures[i].matin;
             }
-            if (dTemperatures[i] > dMaximumMatin) {
-                dMaximumMatin = dTemperatures[i];
+            if (temperatures[i].aprem > apremMax){
+                apremMax = temperatures[i].aprem;
             }
+            if (temperatures[i].matin < matinMin){
+                matinMin = temperatures[i].matin;
+            }
+            if (temperatures[i].aprem <apremMin){
+                apremMin = temperatures[i].aprem;
+            }
+            // Ici, les variables sont pour le moment que la somme des températures matin ou soir
+            matinMoy += temperatures[i].matin;
+            apremMoy += temperatures[i].aprem;
+
         }
 
-        for (int i = 1; i < dTemperatures.length; i= i+2) {
-            dTemperatures[i] = Math.random() * 20.00 + 10;
-            dMoyenneAprem += dTemperatures[i];
-            if (dTemperatures[i] < dMinimumAprem) {
-                dMinimumAprem = dTemperatures[i];
-            }
-            if (dTemperatures[i] > dMaximumAprem) {
-                dMaximumAprem = dTemperatures[i];
-            }
-        }
-
-        if (dMaximumMatin < dMaximumAprem) {
-            dMaximum = dMaximumAprem;
+        // Calcul de la température minimale et de la maximale
+        if (matinMax < apremMax){
+            max = apremMax;
         }else{
-            dMaximum = dMaximumMatin;
+            max = matinMin;
         }
-
-        if (dMinimumMatin < dMinimumAprem) {
-            dMinimum = dMinimumMatin;
+        if (matinMin < apremMin){
+            min = matinMin;
         }else{
-            dMinimum = dMinimumAprem;
+            min = apremMin;
         }
 
+        // Calcul de la moyenne
+        moy = (matinMoy + apremMoy) / (temperatures.length * 2);
+        matinMoy = matinMoy / temperatures.length;
+        apremMoy = apremMoy / temperatures.length;
 
-        dMoyenne = (dMoyenneMatin + dMoyenneAprem) / dTemperatures.length;
-        dMoyenneMatin = dMoyenneMatin / (dTemperatures.length / 2);
-        dMoyenneAprem = dMoyenneAprem / (dTemperatures.length / 2);
 
 
-        System.out.print("\u001b[1mTempératures:  ");
-        for (int i = 0; i < dTemperatures.length; i++) {
-            System.out.print(df.format(dTemperatures[i]) + "   ");
+        System.out.println("Températures: ");
+        for(int i=0; i<temperatures.length; i++) {
+            System.out.print(temperatures[i].jour + " ");
+            System.out.print(df.format(temperatures[i].matin) + " ");
+            System.out.print(df.format(temperatures[i].aprem) + "   ");
         }
 
-        System.out.print("\nTempératures matin:   ");
-        for (int i = 0; i < dTemperatures.length; i= i+2) {
-            System.out.print(df.format(dTemperatures[i]) + "   ");
+        System.out.println("\n\nTempératures matin: ");
+        for(int i=0; i<temperatures.length; i++) {
+            System.out.print(temperatures[i].jour + " ");
+            System.out.print(df.format(temperatures[i].matin) + "   ");
         }
-        System.out.print("\nTempératures après-midi:   ");
-        for (int i = 1; i < dTemperatures.length; i= i+2) {
-            System.out.print(df.format(dTemperatures[i]) + "   ");
+
+        System.out.println("\n\nTempératures après-midi: ");
+        for(int i=0; i<temperatures.length; i++) {
+            System.out.print(temperatures[i].jour + " ");
+            System.out.print(df.format(temperatures[i].aprem) + "   ");
         }
-        System.out.println("\u001b[31m\n\nTempérature maximale matin:   " + df.format(dMaximumMatin));
-        System.out.println("Température maximale après-midi: " + df.format(dMaximumAprem));
-        System.out.println("Température maximale: " + df.format(dMaximum));
 
-        System.out.println("\u001b[36m\n\nTempérature minimale matin:   " + df.format(dMinimumMatin));
-        System.out.println("Température minimale après-midi: " + df.format(dMinimumAprem));
-        System.out.println("Température minimale: " + df.format(dMinimum));
+        System.out.println("\n\n\u001b[31mTempérature maximale matin: " + df.format(matinMax));
+        System.out.println("Température maximale après-midi: " + df.format(apremMax));
+        System.out.println("Température maximale: " + df.format(max) + "\u001b[0m");
 
-        System.out.println("\u001b[32m\n\nTempérature moyenne matin:   " + df.format(dMoyenneMatin));
-        System.out.println("Température moyenne après-midi: " + df.format(dMoyenneAprem));
-        System.out.println("Température moyenne: " + df.format(dMoyenne) + "\u001b[0m");
+        System.out.println("\n\u001b[34mTempératures minimale matin: " + df.format(matinMin));
+        System.out.println("Température minimale après-midi: " + df.format(apremMin));
+        System.out.println("Température minimale: " + df.format(min) + "\u001b[0m");
+
+        System.out.println("\n\u001b[32mTempérature moyenne matin: " + df.format(matinMoy));
+        System.out.println("Température moyenne après-midi : " + df.format(apremMoy));
+        System.out.println("Température moyenne: " + df.format(moy) + "\u001b[0m");
 
     }
 }
